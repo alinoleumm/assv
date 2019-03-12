@@ -1,11 +1,68 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Flask Tutorial</title>
-  </head>
-  <body>
-    <h1> My First Try Using Flask </h1>
-    <p> Flask is Fun </p>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Algorithm Selection Demo</title>
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/app.css') }}">
+</head>
+
+<body>
+	<form action="/upload" method="post" enctype="multipart/form-data" >
+		<!-- ADD PREVIEW FOR AN IMAGE -->
+      	<input type="file" name="image"> 
+      	<br>
+      	<select name="place">
+			<option value=0>Inside</option>
+			<option value=1>Outside</option>
+			<option value=2>Not available</option>
+		</select> 
+		<!-- pick Not available if outside -->
+      	<select name="inside">
+			<option value=0>Office</option>
+			<option value=1>House</option>
+			<option value=2>Storage/Stable/Pumbing...</option>			
+			<option value=3>Not available</option>
+			<option value=4>Sport facility</option>
+		</select> 
+		<!-- pick Not available if inside -->
+      	<select name="outside">
+			<option value=0>City landscape</option>
+			<option value=1>Village landscape</option>
+			<option value=2>Natural landscape</option>
+			<option value=3>Not available</option>
+			<option value=4>Sport facility</option>
+		</select> 
+      	<select name="filled">
+			<option value=0>Filled</option>
+			<option value=1>Empty</option>
+		</select> 
+      	<select name="light">
+			<option value=0>Point light</option>
+			<option value=1>Diffused light</option>
+		</select> 
+      	<select name="surrounding">
+			<option value=0>Natural</option>
+			<option value=1>Artificial</option>
+			<option value=2>Hard to detect</option>
+		</select> 
+      	<select name="time">
+			<option value=0>Day</option>
+			<option value=1>Night</option>
+			<option value=2>Not available</option>
+		</select> 
+      	<select name="action">
+			<option value=0>Neutral</option>
+			<option value=1>Party</option>
+			<option value=2>Sport</option>
+			<option value=3>Recreation</option>
+			<option value=4>Work</option>
+			<option value=5>Food</option>
+			<option value=6>No subject</option>
+			<option value=7>Leisure</option>
+		</select> 
+		<br>
+    	<input type="submit" value="Upload your image" class="btn btn-primary">
+  	</form>
+
+</body>
 </html>
