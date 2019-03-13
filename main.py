@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template, request            
 import subprocess 
-
+import shlex
 import sys
 import os
 import torch
@@ -16,8 +16,41 @@ from torch.autograd import Variable
 import numpy as np
 from PIL import Image
 from sklearn.externals import joblib
+import skimage.io
+import matplotlib
+import matplotlib.pyplot as plt
+import random
+import itertools
+import colorsys
 
 app = Flask(__name__)
+
+class_names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane',
+               'bus', 'train', 'truck', 'boat', 'traffic light',
+               'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird',
+               'cat', 'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear',
+               'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie',
+               'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball',
+               'kite', 'baseball bat', 'baseball glove', 'skateboard',
+               'surfboard', 'tennis racket', 'bottle', 'wine glass', 'cup',
+               'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+               'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza',
+               'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed',
+               'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote',
+               'keyboard', 'cell phone', 'microwave', 'oven', 'toaster',
+               'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors',
+               'teddy bear', 'hair drier', 'toothbrush']
+
+def random_colors(N, bright=True):
+    brightness = 1.0 if bright else 0.7
+    hsv = [(i / N, 1, brightness) for i in range(N)]
+    colors = list(map(lambda c: colorsys.hsv_to_rgb(*c), hsv))
+    random.shuffle(colors)
+    return colors
+
+plt.rcParams['figure.figsize'] = (10, 10)
+plt.rcParams['image.interpolation'] = 'nearest'
+plt.rcParams['image.cmap'] = 'gray'
 
 algorithms = ['RetinaNet', 'SSD', 'MaskR-CNN', 'MultiPath Network', 'R-FCN', 'YOLO']
 
@@ -63,6 +96,50 @@ def choose(fname, context):
     algo = clf.predict(np.hstack((features,context)).reshape(1, -1))[0]
     return algo
 
+# ADD ALGORITHM AS PARAMETER
+def detect(fname):
+    subprocess.call(shlex.split('./connect.sh ' + fname))
+
+    image = skimage.io.imread(fname)
+
+    lines = [line.rstrip('\n') for line in open('detection.txt')]
+    numinst = int(len(lines)/6)
+                                   
+    instances = np.empty((0,6))
+    for n in range(numinst):
+        inst = []
+        x = float("{0:.2f}".format(float(lines[6*n])))
+        y = float("{0:.2f}".format(float(lines[6*n+1])))
+        width = float("{0:.2f}".format(float(lines[6*n+2])))
+        height = float("{0:.2f}".format(float(lines[6*n+3])))
+        category_id = int(lines[6*n+4])
+        score = float("{0:.3f}".format(float(lines[6*n+5])))    
+        inst.append(x)
+        inst.append(y)
+        inst.append(width)
+        inst.append(height)
+        inst.append(category_id)
+        inst.append(score)
+        instances = np.append(instances, np.expand_dims(inst, axis=0), axis=0)    
+    # print(instances)
+
+    colors = random_colors(instances.shape[0])
+
+    plt.imshow(image)
+    currentAxis = plt.gca()
+    currentAxis.axis('off')
+
+    for i in range(len(instances)):
+        color = colors[i]
+        p = instances[i]
+        coords = (p[0], p[1]), p[2]-p[0]+1, p[3]-p[1]+1
+        display_txt = class_names[(int(p[4]))] + ': ' + str(p[5])
+        currentAxis.add_patch(plt.Rectangle(*coords, fill=False, edgecolor=color, linewidth=2))
+        currentAxis.text(p[0], p[1], display_txt, bbox={'facecolor':color, 'alpha':0.5})
+        
+    plt.savefig('detections/' + fname[9:])
+    plt.close()
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -82,6 +159,7 @@ def upload_file():
     f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(f)
     algo = choose(os.path.join(app.config['UPLOAD_FOLDER'], file.filename), [place,inside,outside,filled,light,surrounding,time,action])
+    detect(os.path.join(app.config['UPLOAD_FOLDER'], file.filename)) # ADD ALGORITHM AS PARAMETER
     return 'Best algorithm for this image is ' + algorithms[algo-1] + '.'
 
 if __name__ == "__main__":
