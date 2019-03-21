@@ -1,5 +1,3 @@
-# https://medium.com/@sightengine_/image-upload-and-moderation-with-python-and-flask-e7585f43828a
-
 from flask import Flask, render_template, request            
 import subprocess 
 import shlex
@@ -97,8 +95,13 @@ def choose(fname, context):
     return algo
 
 # ADD ALGORITHM AS PARAMETER
-def detect(fname):
-    subprocess.call(shlex.split('./connect.sh ' + fname))
+def detect(fname, algo):
+    if algo==1:
+        subprocess.call(shlex.split('./detect/retinanet.sh ' + fname))
+    elif algo==3:
+        subprocess.call(shlex.split('./detect/maskrcnn.sh ' + fname))
+    else:
+        subprocess.call(shlex.split('./detect/yolo.sh ' + fname))
 
     image = skimage.io.imread(fname)
 
@@ -137,7 +140,7 @@ def detect(fname):
         currentAxis.add_patch(plt.Rectangle(*coords, fill=False, edgecolor=color, linewidth=2))
         currentAxis.text(p[0], p[1], display_txt, bbox={'facecolor':color, 'alpha':0.5})
         
-    plt.savefig('detections/' + fname[9:])
+    plt.savefig('detections/' + str(algorithms[algo-1]) + '_' + fname[30:])
     plt.close()
 
 @app.route("/")
@@ -158,8 +161,8 @@ def upload_file():
     file = request.files['image'] 
     f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(f)
-    algo = choose(os.path.join(app.config['UPLOAD_FOLDER'], file.filename), [place,inside,outside,filled,light,surrounding,time,action])
-    detect(os.path.join(app.config['UPLOAD_FOLDER'], file.filename)) # ADD ALGORITHM AS PARAMETER
+    algo = choose('/home/alinoleumm/assv/uploads/' + str(file.filename), [place,inside,outside,filled,light,surrounding,time,action])
+    detect('/home/alinoleumm/assv/uploads/' + str(file.filename), algo) 
     return 'Best algorithm for this image is ' + algorithms[algo-1] + '.'
 
 if __name__ == "__main__":
