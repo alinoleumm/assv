@@ -96,10 +96,17 @@ def choose(fname, context):
 
 # ADD ALGORITHM AS PARAMETER
 def detect(fname, algo):
+
     if algo==1:
         subprocess.call(shlex.split('./detect/retinanet.sh ' + fname))
+    elif algo==2:
+        subprocess.call(shlex.split('./detect/ssd.sh ' + fname))
     elif algo==3:
         subprocess.call(shlex.split('./detect/maskrcnn.sh ' + fname))
+    elif algo==4:
+        subprocess.call(shlex.split('./detect/multipathnet.sh ' + fname))
+    elif algo==5:
+        subprocess.call(shlex.split('./detect/rfcn.sh ' + fname))
     else:
         subprocess.call(shlex.split('./detect/yolo.sh ' + fname))
 
@@ -139,7 +146,7 @@ def detect(fname, algo):
         display_txt = class_names[(int(p[4]))] + ': ' + str(p[5])
         currentAxis.add_patch(plt.Rectangle(*coords, fill=False, edgecolor=color, linewidth=2))
         currentAxis.text(p[0], p[1], display_txt, bbox={'facecolor':color, 'alpha':0.5})
-        
+      
     plt.savefig('detections/' + str(algorithms[algo-1]) + '_' + fname[30:])
     plt.close()
 
