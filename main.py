@@ -22,6 +22,7 @@ import itertools
 import colorsys
 from skimage.measure import regionprops
 import scipy.spatial.distance as dist
+from collections import namedtuple
 
 app = Flask(__name__)
 
@@ -101,6 +102,34 @@ class DataSet(Dataset):
     def __len__(self):
         return len(self.__xs)
 
+def removeContradiction(fname, instid):
+    lines = [line.rstrip('\n') for line in open('detection.txt')]
+    file = open('detection_2.txt', 'w')
+    for n in range(int(len(lines)/6)):
+        if n!=instid:
+            for i in range(6):
+                print(lines[6*n+i])
+                file.write(lines[6*n+i] + '\n')
+        else:
+            xmin = int(lines[6*n])
+            ymin = int(lines[6*n+1])
+            xmax = int(lines[6*n+2])
+            ymax = int(lines[6*n+3])
+    file.close()
+    img = Image.open(fname)
+    width, height = img.size
+    Color = namedtuple("Color", "R G B")
+    blackColor = Color(0x00, 0x00, 0x00)
+    for w in range(width):
+        for h in range(height):
+            if w >= xmin and w <= xmax and h >= ymin and h <= ymax:
+                continue
+            else:
+                img.putpixel((w,h), blackColor)
+    img.save('uploads_2/' + fname.split('/')[-1])
+    return xmin, ymin, xmax, ymax
+
+
 def chooseWhole(fname, context):
     batch_size = 1
     data_set = DataSet(fname)
@@ -126,9 +155,11 @@ def norm(data):
     return hist[0]
 
 def chooseInstance(fname, xmin, ymin, xmax, ymax, gt): 
+
     img = Image.open(fname).convert('L')
     width, height = img.size
     obj = img.crop((xmin, ymin, xmax, ymax))
+    # obj.save('couch.png')
     objWidth, objHeight = obj.size
     regions = regionprops(obj)
 
@@ -173,7 +204,7 @@ def chooseInstance(fname, xmin, ymin, xmax, ymax, gt):
     algo = iclf.predict(gtsim)[0]
     return algo
 
-def detect(fname, algo):
+def detect(fname, algo, isinst):
 
     if algo==1:
         subprocess.call(shlex.split('./detect/retinanet.sh ' + fname))
@@ -188,10 +219,18 @@ def detect(fname, algo):
     else:
         subprocess.call(shlex.split('./detect/yolo.sh ' + fname))
 
-    image = skimage.io.imread(fname)
+    if isinst:
+        detall = open('detection.txt', 'a+')
+        lines = [line.rstrip('\n') for line in open('detection_2.txt')]
+        for line in lines:
+            detall.write(line + '\n')
+        detall.close()
+
+    image = skimage.io.imread('/home/alinoleumm/assv/uploads/' + fname.split('/')[-1])
 
     lines = [line.rstrip('\n') for line in open('detection.txt')]
     numinst = int(len(lines)/6)
+    print('NUMBER OF INSTANCES IS ' + str(numinst))
                                    
     instances = np.empty((0,6))
     for n in range(numinst):
@@ -224,7 +263,10 @@ def detect(fname, algo):
         currentAxis.add_patch(plt.Rectangle(*coords, fill=False, edgecolor=color, linewidth=2))
         currentAxis.text(p[0], p[1], display_txt, bbox={'facecolor':color, 'alpha':0.5})
 
-    plt.savefig('detections/' + str(algorithms[algo-1]) + '_' + fname[30:])
+    if isinst:
+        plt.savefig('detections/' + str(algorithms[algo-1]) + '_stage_2_' + fname.split('/')[-1])
+    else:
+        plt.savefig('detections/' + str(algorithms[algo-1]) + '_stage_1_' + fname.split('/')[-1])
     plt.close()
 
 @app.route("/")
@@ -245,9 +287,15 @@ def upload_file():
     file = request.files['image'] 
     f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(f)
-    algowhole = chooseWhole('/home/alinoleumm/assv/uploads/' + str(file.filename), [place,inside,outside,filled,light,surrounding,time,action])
-    detect('/home/alinoleumm/assv/uploads/' + str(file.filename), algo)
-    algoinst = chooseInstance('/home/alinoleumm/assv/uploads/' + str(file.filename), 0,242,173,374,57)
+    algowhole = chooseWhole('/home/alinoleumm/assv/uploads/' + str(file.filename), [place,inside,outside,filled,light,surrounding,time,action])    
+    detect('/home/alinoleumm/assv/uploads/' + str(file.filename), algowhole, False)
+    '''
+    SEMANTIC VERIFICATION 
+    should return contradicting detection and hypothesis
+    '''
+    xmin, ymin, xmax, ymax = removeContradiction('/home/alinoleumm/assv/uploads/' + str(file.filename), 0)
+    algoinst = chooseInstance('/home/alinoleumm/assv/uploads/' + str(file.filename), xmin, ymin, xmax, ymax, 56) 
+    detect('/home/alinoleumm/assv/uploads_2/' + str(file.filename), algoinst, True)
     return 'Best algorithm for this image is ' + algorithms[algowhole-1] + ' and best algorithm for this instance is ' + algorithms[algoinst-1] + '.'
 
 if __name__ == "__main__":
