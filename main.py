@@ -105,16 +105,16 @@ class DataSet(Dataset):
 def removeContradiction(fname, instid):
     lines = [line.rstrip('\n') for line in open('detection.txt')]
     file = open('detection_2.txt', 'w')
-    for n in range(int(len(lines)/6)):
+    for n in range(int(len(lines)/7)):
         if n!=instid:
-            for i in range(6):
-                print(lines[6*n+i])
-                file.write(lines[6*n+i] + '\n')
+            for i in range(7):
+                print(lines[7*n+i])
+                file.write(lines[7*n+i] + '\n')
         else:
-            xmin = int(lines[6*n])
-            ymin = int(lines[6*n+1])
-            xmax = int(lines[6*n+2])
-            ymax = int(lines[6*n+3])
+            xmin = int(lines[7*n])
+            ymin = int(lines[7*n+1])
+            xmax = int(lines[7*n+2])
+            ymax = int(lines[7*n+3])
     file.close()
     img = Image.open(fname)
     width, height = img.size
@@ -229,24 +229,23 @@ def detect(fname, algo, isinst):
     image = skimage.io.imread('/home/alinoleumm/assv/uploads/' + fname.split('/')[-1])
 
     lines = [line.rstrip('\n') for line in open('detection.txt')]
-    numinst = int(len(lines)/6)
-    print('NUMBER OF INSTANCES IS ' + str(numinst))
+    numinst = int(len(lines)/7)
                                    
     instances = np.empty((0,6))
     for n in range(numinst):
         inst = []
-        x = float("{0:.2f}".format(float(lines[6*n])))
-        y = float("{0:.2f}".format(float(lines[6*n+1])))
-        width = float("{0:.2f}".format(float(lines[6*n+2])))
-        height = float("{0:.2f}".format(float(lines[6*n+3])))
-        category_id = int(lines[6*n+4])
-        score = float("{0:.3f}".format(float(lines[6*n+5])))    
+        x = float("{0:.2f}".format(float(lines[7*n])))
+        y = float("{0:.2f}".format(float(lines[7*n+1])))
+        width = float("{0:.2f}".format(float(lines[7*n+2])))
+        height = float("{0:.2f}".format(float(lines[7*n+3])))
+        category_id = int(lines[7*n+4])
+        alg = int(lines[7*n+6])
         inst.append(x)
         inst.append(y)
         inst.append(width)
         inst.append(height)
         inst.append(category_id)
-        inst.append(score)
+        inst.append(alg)
         instances = np.append(instances, np.expand_dims(inst, axis=0), axis=0)    
 
     colors = random_colors(instances.shape[0])
@@ -259,7 +258,7 @@ def detect(fname, algo, isinst):
         color = colors[i]
         p = instances[i]
         coords = (p[0], p[1]), p[2]-p[0]+1, p[3]-p[1]+1
-        display_txt = class_names[(int(p[4]))] + ': ' + str(p[5])
+        display_txt = class_names[(int(p[4]))] + ', ' + str(algorithms[int(p[5])])
         currentAxis.add_patch(plt.Rectangle(*coords, fill=False, edgecolor=color, linewidth=2))
         currentAxis.text(p[0], p[1], display_txt, bbox={'facecolor':color, 'alpha':0.5})
 
@@ -287,7 +286,7 @@ def upload_file():
     file = request.files['image'] 
     f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(f)
-    algowhole = chooseWhole('/home/alinoleumm/assv/uploads/' + str(file.filename), [place,inside,outside,filled,light,surrounding,time,action])    
+    algowhole = chooseWhole('/home/alinoleumm/assv/uploads/' + str(file.filename), [place,inside,outside,filled,light,surrounding,time,action])   
     detect('/home/alinoleumm/assv/uploads/' + str(file.filename), algowhole, False)
     '''
     SEMANTIC VERIFICATION 
