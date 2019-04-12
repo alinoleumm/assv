@@ -263,9 +263,9 @@ def detect(fname, algo, isinst):
         currentAxis.text(p[0], p[1], display_txt, bbox={'facecolor':color, 'alpha':0.5})
 
     if isinst:
-        plt.savefig('detections/' + str(algorithms[algo-1]) + fname.split('/')[-1].split('.')[0] + '_stage_2.jpg')
+        plt.savefig('detections/' + fname.split('/')[-1].split('.')[0] + '_' + str(algorithms[algo-1]) + '_stage_2.jpg')
     else:
-        plt.savefig('detections/' + str(algorithms[algo-1]) + fname.split('/')[-1].split('.')[0] + '_stage_1.jpg')
+        plt.savefig('detections/' + fname.split('/')[-1].split('.')[0] + '_' + str(algorithms[algo-1]) + '_stage_1.jpg')
     plt.close()
 
 @app.route("/")
