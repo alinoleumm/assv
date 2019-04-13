@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request            
+from flask import Flask, render_template, request  
+from flask import send_file          
 import subprocess 
 import shlex
 import sys
@@ -170,7 +171,9 @@ def upload_file():
     file.save(f)
     algo = choose('/home/alinoleumm/assv/uploads/' + str(file.filename), [place,inside,outside,filled,light,surrounding,time,action])
     detect('/home/alinoleumm/assv/uploads/' + str(file.filename), algo) 
-    return 'Best algorithm for this image is ' + algorithms[algo-1] + '.'
+    return 'Best algorithm for this image is ' + algorithms[algo-1] + '.'\
+    # return send_file('/home/alinoleumm/assv/detections/74.jpg', mimetype='image/gif')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
