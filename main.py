@@ -263,10 +263,14 @@ def detect(fname, algo, isinst):
         currentAxis.text(p[0], p[1], display_txt, bbox={'facecolor':color, 'alpha':0.5})
 
     if isinst:
-        plt.savefig('detections/' + fname.split('/')[-1].split('.')[0] + '_' + str(algorithms[algo-1]) + '_stage_2.jpg')
+        detfname = 'static/detections/' + fname.split('/')[-1].split('.')[0] + '_' + str(algorithms[algo-1]) + '_stage_2.jpg'
     else:
-        plt.savefig('detections/' + fname.split('/')[-1].split('.')[0] + '_' + str(algorithms[algo-1]) + '_stage_1.jpg')
+        detfname = 'static/detections/' + fname.split('/')[-1].split('.')[0] + '_' + str(algorithms[algo-1]) + '_stage_1.jpg'
+
+    plt.savefig(detfname)
     plt.close()
+
+    return detfname
 
 @app.route("/")
 def home():
@@ -287,15 +291,15 @@ def upload_file():
     f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(f)
     algowhole = chooseWhole('/home/alinoleumm/assv/uploads/' + str(file.filename), [place,inside,outside,filled,light,surrounding,time,action])   
-    detect('/home/alinoleumm/assv/uploads/' + str(file.filename), algowhole, False)
+    detfname = detect('/home/alinoleumm/assv/uploads/' + str(file.filename), algowhole, False)
     '''
     SEMANTIC VERIFICATION 
     should return contradicting detection and hypothesis
     '''
-    xmin, ymin, xmax, ymax = removeContradiction('/home/alinoleumm/assv/uploads/' + str(file.filename), 0)
-    algoinst = chooseInstance('/home/alinoleumm/assv/uploads/' + str(file.filename), xmin, ymin, xmax, ymax, 56) 
-    detect('/home/alinoleumm/assv/uploads_2/' + str(file.filename), algoinst, True)
-    return 'Best algorithm for this image is ' + algorithms[algowhole-1] + ' and best algorithm for this instance is ' + algorithms[algoinst-1] + '.'
+    # xmin, ymin, xmax, ymax = removeContradiction('/home/alinoleumm/assv/uploads/' + str(file.filename), 0)
+    # algoinst = chooseInstance('/home/alinoleumm/assv/uploads/' + str(file.filename), xmin, ymin, xmax, ymax, -1) 
+    # detfname = detect('/home/alinoleumm/assv/uploads_2/' + str(file.filename), algoinst, True)
+    return render_template('home.html', filename=detfname)
 
 if __name__ == "__main__":
     app.run(debug=True)
