@@ -4,80 +4,95 @@
   <meta charset="UTF-8">
   <title>Algorithm Selection Demo</title>
   <script src="{{url_for('static', filename='js/functions.js')}}"></script>
+  <link rel="stylesheet" href="{{url_for('static', filename='css/design.css')}}">
   <!-- <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/app.css') }}"> -->
 </head>
 
 <body>
-	<center><form action="/upload" method="post" enctype="multipart/form-data" >
-		<!-- ADD PREVIEW FOR AN IMAGE -->
+	<form action="/upload" method="post" enctype="multipart/form-data" >
       	<input type="file" id="imgupload" name="image" onchange="preview_image(event)"> 
-      	<br>
+      	<br><br>
       	<image id="preview">
-      	<br>
-      	<select name="place">
-      		<option selected disabled>Place</option>
-			<option value=0>Inside</option>
-			<option value=1>Outside</option>
-			<option value=2>Not available</option>
-		</select> 
-		<!-- pick Not available if outside -->
-      	<select name="inside">
-      		<option selected disabled>If inside</option>
-			<option value=0>Office</option>
-			<option value=1>House</option>
-			<option value=2>Storage/Stable/Pumbing...</option>			
-			<option value=3>Not available</option>
-			<option value=4>Sport facility</option>
-		</select> 
-		<!-- pick Not available if inside -->
-      	<select name="outside">
-      		<option selected disabled>If outside</option>
-			<option value=0>City landscape</option>
-			<option value=1>Village landscape</option>
-			<option value=2>Natural landscape</option>
-			<option value=3>Not available</option>
-			<option value=4>Sport facility</option>
-		</select> 
-      	<select name="filled">
-      		<option selected disabled>Image</option>
-			<option value=0>Filled</option>
-			<option value=1>Empty</option>
-		</select> 
-		<br>
-      	<select name="light">
-      		<option selected disabled>Light</option>
-			<option value=0>Point light</option>
-			<option value=1>Diffused light</option>
-		</select> 
-      	<select name="surrounding">
-      		<option selected disabled>Surrounding</option>
-			<option value=0>Natural</option>
-			<option value=1>Artificial</option>
-			<option value=2>Hard to detect</option>
-		</select> 
-      	<select name="time">
-      		<option selected disabled>Time</option>
-			<option value=0>Day</option>
-			<option value=1>Night</option>
-			<option value=2>Not available</option>
-		</select> 
-      	<select name="action">
-      		<option selected disabled>Action</option>
-			<option value=0>Neutral</option>
-			<option value=1>Party</option>
-			<option value=2>Sport</option>
-			<option value=3>Recreation</option>
-			<option value=4>Work</option>
-			<option value=5>Food</option>
-			<option value=6>No subject</option>
-			<option value=7>Leisure</option>
-		</select> 
-		<br>
-    	<input type="submit" value="Upload your image" class="btn btn-primary">
-  	</form></center>
-
+      	<br><br>
+      	<div class="styled-select black rounded">
+	      	<select name="place">
+	      		<option selected disabled>Place</option>
+				<option value=0>Inside</option>
+				<option value=1>Outside</option>
+				<option value=2>Not available</option>
+			</select> 
+		</div>
+		<div class="styled-select black rounded">
+	      	<select name="inside">
+	      		<option selected disabled>If inside</option>
+				<option value=0>Office</option>
+				<option value=1>House</option>
+				<option value=2>Storage/Stable/Pumbing...</option>			
+				<option value=3>Not available</option>
+				<option value=4>Sport facility</option>
+			</select> 
+		</div>
+		<div class="styled-select black rounded">
+	      	<select name="outside">
+	      		<option selected disabled>If outside</option>
+				<option value=0>City landscape</option>
+				<option value=1>Village landscape</option>
+				<option value=2>Natural landscape</option>
+				<option value=3>Not available</option>
+				<option value=4>Sport facility</option>
+			</select> 
+		</div>
+		<div class="styled-select black rounded">
+	      	<select name="filled">
+	      		<option selected disabled>Image</option>
+				<option value=0>Filled</option>
+				<option value=1>Empty</option>
+			</select> 
+		</div>
+			<br>
+		<div class="styled-select black rounded">
+	      	<select name="light">
+	      		<option selected disabled>Light</option>
+				<option value=0>Point light</option>
+				<option value=1>Diffused light</option>
+			</select> 
+		</div>
+		<div class="styled-select black rounded">
+	      	<select name="surrounding">
+	      		<option selected disabled>Surrounding</option>
+				<option value=0>Natural</option>
+				<option value=1>Artificial</option>
+				<option value=2>Hard to detect</option>
+			</select> 
+		</div>
+		<div class="styled-select black rounded">
+	      	<select name="time">
+	      		<option selected disabled>Time</option>
+				<option value=0>Day</option>
+				<option value=1>Night</option>
+				<option value=2>Not available</option>
+			</select> 
+		</div>
+		<div class="styled-select black rounded">
+	      	<select name="action">
+	      		<option selected disabled>Action</option>
+				<option value=0>Neutral</option>
+				<option value=1>Party</option>
+				<option value=2>Sport</option>
+				<option value=3>Recreation</option>
+				<option value=4>Work</option>
+				<option value=5>Food</option>
+				<option value=6>No subject</option>
+				<option value=7>Leisure</option>
+			</select> 
+		</div>
+		<br><br>
+		<div class="buttons">
+    		<input type="submit" value="PERFORM OBJECT DETECTION" class="btn btn-dark btn-mid"> <button type="button" class="btn btn-dark btn-big-mid" onclick="clearall();"> CLEAR ALL</button>
+    	</div>
+  	</form>
   	{% if filename %}
-	  	<center><img src="{{filename}}" style="width:50%; height:auto;"></center>
+	  	<center><img src="{{filename}}" id="detection" style="width:50%; height:auto;"></center>
     {% endif %}
 
 </body>

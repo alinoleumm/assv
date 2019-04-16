@@ -70,10 +70,6 @@ def random_colors(N, bright=True):
     random.shuffle(colors)
     return colors
 
-plt.rcParams['figure.figsize'] = (10, 10)
-plt.rcParams['image.interpolation'] = 'nearest'
-plt.rcParams['image.cmap'] = 'gray'
-
 algorithms = ['RetinaNet', 'SSD', 'MaskR-CNN', 'MultiPath Network', 'R-FCN', 'YOLO']
 cat_dir = '/mnt/images/MSCOCO/result_val2014/object_histograms/' # PATH TO OBJECT HISTOGRAMS
 
@@ -227,6 +223,8 @@ def detect(fname, algo, isinst):
         detall.close()
 
     image = skimage.io.imread('/home/alinoleumm/assv/uploads/' + fname.split('/')[-1])
+    imgw = image.shape[0]
+    imgh = image.shape[1]
 
     lines = [line.rstrip('\n') for line in open('detection.txt')]
     numinst = int(len(lines)/7)
@@ -250,6 +248,10 @@ def detect(fname, algo, isinst):
 
     colors = random_colors(instances.shape[0])
 
+    plt.rcParams['figure.figsize'] = (imgh/50, imgw/50)
+    plt.rcParams['image.interpolation'] = 'nearest'
+    plt.rcParams['image.cmap'] = 'gray'
+
     plt.imshow(image)
     currentAxis = plt.gca()
     currentAxis.axis('off')
@@ -258,7 +260,7 @@ def detect(fname, algo, isinst):
         color = colors[i]
         p = instances[i]
         coords = (p[0], p[1]), p[2]-p[0]+1, p[3]-p[1]+1
-        display_txt = class_names[(int(p[4]))] + ', ' + str(algorithms[int(p[5])])
+        display_txt = class_names[(int(p[4]))] + '\n' + str(algorithms[int(p[5])])
         currentAxis.add_patch(plt.Rectangle(*coords, fill=False, edgecolor=color, linewidth=2))
         currentAxis.text(p[0], p[1], display_txt, bbox={'facecolor':color, 'alpha':0.5})
 
