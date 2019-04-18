@@ -72,13 +72,13 @@ def random_colors(N, bright=True):
     return colors
 
 algorithms = ['RetinaNet', 'SSD', 'MaskR-CNN', 'MultiPath Network', 'R-FCN', 'YOLO']
-cat_dir = '/mnt/images/MSCOCO/result_val2014/object_histograms/' # PATH TO OBJECT HISTOGRAMS
+cat_dir = '/home/alinoleumm/assv_assets/object_histograms/' # PATH TO OBJECT HISTOGRAMS
 
 UPLOAD_FOLDER = os.path.basename('uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-wclf = joblib.load('/mnt/images/MSCOCO/result_val2014/svc.sav') # PATH TO PRE-TRAINED MODEL FOR WHOLE IMAGE
-iclf = joblib.load('/mnt/images/MSCOCO/result_val2014/dt.sav') # PATH TO PRE-TRAINED MODEL FOR INSTANCES
+wclf = joblib.load('/home/alinoleumm/assv_assets/svc.sav') # PATH TO PRE-TRAINED MODEL FOR WHOLE IMAGE
+iclf = joblib.load('/home/alinoleumm/assv_assets/dt.sav') # PATH TO PRE-TRAINED MODEL FOR INSTANCES
 model = models.alexnet(pretrained=True)
 new_classifier = nn.Sequential(*list(model.classifier.children())[:-1])
 
@@ -263,7 +263,7 @@ def detect(fname, algo, isinst):
         coords = (p[0], p[1]), p[2]-p[0]+1, p[3]-p[1]+1
         display_txt = class_names[(int(p[4]))] + '\n' + str(algorithms[int(p[5])])
         currentAxis.add_patch(plt.Rectangle(*coords, fill=False, edgecolor=color, linewidth=2))
-        currentAxis.text(p[0], p[1], display_txt, bbox={'facecolor':color, 'alpha':0.5})
+        currentAxis.text(p[0], p[1], display_txt, fontsize=13, bbox={'facecolor':color, 'alpha':0.5})
 
     if isinst:
         detfname = 'static/detections/' + fname.split('/')[-1].split('.')[0] + '_' + str(algorithms[algo-1]) + '_stage_2.jpg'
@@ -281,7 +281,6 @@ def home():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    # ADD RESTRICTIONS TO FILE EXTENSIONS
     place = int(request.form['place'])
     inside = int(request.form['inside'])
     outside = int(request.form['outside'])
