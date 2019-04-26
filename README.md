@@ -2,8 +2,8 @@
 
 Upload the image and choose the relevant context.
 
-![image selection and context description](https://radikal.ru/big/fmcelm50cznlc)
+![image selection and context description](demo1.jpg)
 
 Systems analyses the image and performs the object detection using the best performing algorithm.
 
-![result of object detection](https://radikal.ru/big/b7479ddyfjn1y)
+![result of object detection](demo2.jpg)
