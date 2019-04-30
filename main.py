@@ -184,7 +184,7 @@ def chooseInstance(fname, xmin, ymin, xmax, ymax, gt):
         
     for cl in catNames:
         sim = []
-        obj = np.load('/mnt/images/MSCOCO/result_val2014/object_histograms/' + cl + '.npy')
+        obj = np.load(cat_dir + cl + '.npy')
         sim.append(dist.braycurtis(obj_hist,obj))
         sim.append(dist.canberra(obj_hist,obj))
         sim.append(dist.cityblock(obj_hist,obj))
