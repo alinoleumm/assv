@@ -77,8 +77,8 @@ cat_dir = '/home/alinoleumm/assv_assets/object_histograms/' # PATH TO OBJECT HIS
 UPLOAD_FOLDER = os.path.basename('uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-wclf = joblib.load('/home/alinoleumm/assv_assets/svc.sav') # PATH TO PRE-TRAINED MODEL FOR WHOLE IMAGE
-iclf = joblib.load('/home/alinoleumm/assv_assets/dt.sav') # PATH TO PRE-TRAINED MODEL FOR INSTANCES
+wclf = joblib.load('/home/alinoleumm/assv_assets/svc.sav') # PATH TO PRE-TRAINED MODEL FOR ALGORITHM SELECTION STAGE I
+iclf = joblib.load('/home/alinoleumm/assv_assets/dt.sav') # PATH TO PRE-TRAINED MODEL FOR ALGORITHM SELECTION STAGE II
 model = models.alexnet(pretrained=True)
 new_classifier = nn.Sequential(*list(model.classifier.children())[:-1])
 
