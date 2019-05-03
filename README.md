@@ -1,6 +1,6 @@
-## Algorithm Selection Demo
+# Algorithm Selection Demo
 
-# Installation
+## Installation
 
 Clone the repository:
 
@@ -20,7 +20,7 @@ iclf = joblib.load('/path-to-pretrained-as-II-model')
 ...
 ```
 
-# System usage
+## System usage
 
 Run [main.py](https://github.com/alinoleumm/assv/blob/master/main.py):
 
