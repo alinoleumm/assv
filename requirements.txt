@@ -5,6 +5,4 @@ Pillow
 sklearn
 scikit-image
 matplotlib
-itertools
-colorsys
 scipy
