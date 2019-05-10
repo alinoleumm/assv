@@ -3,7 +3,7 @@ torchvision
 flask
 Pillow
 sklearn
-skimage
+scikit-image
 matplotlib
 collections
 itertools
