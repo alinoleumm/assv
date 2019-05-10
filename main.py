@@ -77,9 +77,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 algorithms = ['RetinaNet', 'SSD', 'MaskR-CNN', 'MultiPath Network', 'R-FCN', 'YOLO']
 
-cat_dir = '/home/alinoleumm/assv_assets/object_histograms/' # PATH TO OBJECT HISTOGRAMS
-wclf = joblib.load('/home/alinoleumm/assv_assets/svc.sav') # PATH TO PRE-TRAINED MODEL FOR ALGORITHM SELECTION STAGE I
-iclf = joblib.load('/home/alinoleumm/assv_assets/dt.sav') # PATH TO PRE-TRAINED MODEL FOR ALGORITHM SELECTION STAGE II
+# cat_dir = '/home/alinoleumm/assv_assets/object_histograms/' # PATH TO OBJECT HISTOGRAMS
+# wclf = joblib.load('/home/alinoleumm/assv_assets/svc.sav') # PATH TO PRE-TRAINED MODEL FOR ALGORITHM SELECTION STAGE I
+# iclf = joblib.load('/home/alinoleumm/assv_assets/dt.sav') # PATH TO PRE-TRAINED MODEL FOR ALGORITHM SELECTION STAGE II
 
 model = models.alexnet(pretrained=True)
 new_classifier = nn.Sequential(*list(model.classifier.children())[:-1])
