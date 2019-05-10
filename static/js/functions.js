@@ -12,5 +12,9 @@ function preview_image(event)
 function clearall()
 {
 	document.getElementById('preview').src = "";
-	document.getElementById('detection').src ="";
+	document.getElementById('detection').src = "";
+	var el1 = document.getElementById('detid');
+	el1.parentNode.removeChild(el1);
+	var el2 = document.getElementById('butid');
+	el2.parentNode.removeChild(el2);
 }
