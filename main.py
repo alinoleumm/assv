@@ -296,14 +296,18 @@ def upload_file():
     file.save(f)
     algowhole = chooseWhole('/home/alinoleumm/assv/uploads/' + str(file.filename), [place,inside,outside,filled,light,surrounding,time,action])   
     detfname = detect('/home/alinoleumm/assv/uploads/' + str(file.filename), algowhole, False)
-    '''
-    SEMANTIC VERIFICATION 
-    should return contradicting detection and hypothesis
-    '''
-    # xmin, ymin, xmax, ymax = removeContradiction('/home/alinoleumm/assv/uploads/' + str(file.filename), 0)
-    # algoinst = chooseInstance('/home/alinoleumm/assv/uploads/' + str(file.filename), xmin, ymin, xmax, ymax, -1) 
-    # detfname = detect('/home/alinoleumm/assv/uploads_2/' + str(file.filename), algoinst, True)
-    return render_template('home.html', filename=detfname)
+    return render_template('home.html', filename=detfname, origfile=file.filename)
+
+@app.route('/refine', methods=['POST'])
+def refine_detection():
+    detid = int(request.form['detectionid'])
+    fname = str(request.form['original'])
+    print('DETID IS ' + str(detid))
+    print('FNAME IS ' + fname)
+    xmin, ymin, xmax, ymax = removeContradiction('/home/alinoleumm/assv/uploads/' + fname, detid)
+    algoinst = chooseInstance('/home/alinoleumm/assv/uploads/' + fname, xmin, ymin, xmax, ymax, -1) 
+    detfname = detect('/home/alinoleumm/assv/uploads_2/' + fname, algoinst, True)
+    return render_template('home.html', filename=detfname, origfile=fname)
 
 if __name__ == "__main__":
     app.run(debug=True)
