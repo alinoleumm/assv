@@ -3,3 +3,9 @@ torchvision
 flask
 Pillow
 sklearn
+skimage
+matplotlib
+collections
+itertools
+colorsys
+scipy
