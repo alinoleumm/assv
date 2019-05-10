@@ -200,7 +200,7 @@ def chooseInstance(fname, xmin, ymin, xmax, ymax, gt):
     for i in range(7):
         gtsim.append(catIds[sims[:,i].tolist().index(min(sims[:,i]))])
 
-    algo = iclf.predict(gtsim)[0]
+    algo = iclf.predict(np.expand_dims(gtsim, axis=0))[0]
     return algo
 
 def detect(fname, algo, isinst):
