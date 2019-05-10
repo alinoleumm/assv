@@ -5,7 +5,6 @@ Pillow
 sklearn
 scikit-image
 matplotlib
-collections
 itertools
 colorsys
 scipy
