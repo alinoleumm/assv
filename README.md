@@ -14,7 +14,7 @@ $ pip install -r requirements.txt
 
 Download pre-trained [algorithm selection stage I model](https://github.com/alinoleumm/assv/releases/download/v1.1/svc.sav), [algorithm selection stage II model](https://github.com/alinoleumm/assv/releases/download/v1.1/dt.sav) and [object histograms](https://github.com/alinoleumm/assv/releases/download/v1.1/object_histograms.tar.gz).
 
-Indicate pathes to downloaded files [here](https://github.com/alinoleumm/assv/blob/2324462ab954f1df88ed4e414e7f1d0ad7c7aeeb/main.py#L80-L82).
+Indicate pathes to downloaded files [here](https://github.com/alinoleumm/assv/blob/2324462ab954f1df88ed4e414e7f1d0ad7c7aeeb/main.py#L80-L82):
 
 ```python
 cat_dir = '/path-to-object-histograms' 
