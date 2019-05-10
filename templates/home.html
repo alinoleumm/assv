@@ -91,9 +91,16 @@
     		<input type="submit" value="PERFORM OBJECT DETECTION" class="btn btn-dark btn-mid"> <button type="button" class="btn btn-dark btn-big-mid" onclick="clearall();"> CLEAR ALL</button>
     	</div>
   	</form>
-  	{% if filename %}
-	  	<center><img src="{{filename}}" id="detection" style="width:50%; height:auto;"></center>
-    {% endif %}
+  	{% if filename and origfile %}
+         	<center><img src="{{filename}}" id="detection" style="width:50%; height:auto;"></center>
+                <div class="refinement">
+                        <form action="/refine" method="post" enctype="multipart/form-data">
+                                <input type="text" name="original" value="{{origfile}}" hidden>
+                                <input type="text" id="detid" name="detectionid" class="detection"><input type="submit" id="butid" value="REFINE DETECTION">
+                        </form>
+                </div>
+	{% endif %}
+
 
 </body>
 </html>
