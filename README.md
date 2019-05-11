@@ -27,3 +27,5 @@ Run [main.py](https://github.com/alinoleumm/assv/blob/master/main.py):
 ```bash
 $ python main.py
 ```
+
+This is a short [demo](https://www.dropbox.com/s/a46trqt7cwrvgm3/SP_DemoWithStageII.mp4?dl=0) of a system.
