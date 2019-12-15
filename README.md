@@ -1,7 +1,5 @@
 # Algorithm Selection Framework
 
-This is the implementation of my [capstone project](https://www.dropbox.com/s/0dma4ny6j5exgaf/Impact%20of%20Reasoning%20and%20Data%20Set%20on%20the%20Quality%20of%0AComputer%20Vision.pdf?dl=0).
-
 Clone the repository:
 
 ```bash
